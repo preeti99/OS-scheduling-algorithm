@@ -4,7 +4,8 @@ int main()
 	int n,i,c,t,flag=0;
 	printf("\n Enter number of process");
 	scanf("%d",&n);
-	int bt[n],at[n],tq=3,p[n],tat=0,wt=0,rt[n],r=n;
+	int bt[n],at[n],tq=3,p[n],tat=0,wt=0,rt[n],r=n;  //bt-burst time   at-arrival time    tq-time quantum  
+	                                                 // tat-turn around time      wt- waiting time   rt- remaining time
 	for(i=0;i<n;i++){
 		p[i]=i;
 		printf("\nEnter Arrival Time of p[%d] process",i+1);
