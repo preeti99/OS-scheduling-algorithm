@@ -17,7 +17,7 @@ int main()
  scanf("%d",&b[i]); 
  for(i=0;i<n;i++)
  x[i]=b[i];
-b[9]=-999;
+ 
 for(time=0;count!=n;time++)
  {
    largest=9;
