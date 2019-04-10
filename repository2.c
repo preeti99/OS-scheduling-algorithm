@@ -35,6 +35,7 @@ for(time=0;count!=n;time++)
    tt= tt+end-a[largest];
   }
  }
+ printf("\n ****************************");
  printf("\n\nAverage waiting time = %lf\n",avg/n);
     printf("Average Turnaround time = %lf",tt/n);
 }
