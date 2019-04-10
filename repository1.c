@@ -1,49 +1,131 @@
 #include<stdio.h>
-int main()
+#include<limits.h>
+//round robin
+//1st iteration TQ=3
+//2nd iteration TQ=6 (waiting processes)
+//3rd iteration SJF (waiting processes)
+int arrivalTime[50],burstTime[50],waitingTime[50],remainingBT[50],TurnAroundTime[50],compltnTime[50];
+int time = 0; // Current time
+int timeQauntum =3;int check=0,checkBT=0,TAT;
+int posMinBT = 0;
+//bool flag = false;
+int n;
+void calcWait();
+void sjf();
+int main()    //------main-----------------
 {
-	int n,i,c,t,flag=0;
-	printf("\n Enter number of process");
-	scanf("%d",&n);
-	int bt[n],at[n],tq=3,p[n],tat=0,wt=0,rt[n],r=n;  //bt-burst time   at-arrival time    tq-time quantum  
-	                                                 // tat-turn around time      wt- waiting time   rt- remaining time
-	for(i=0;i<n;i++){
-		p[i]=i;
-		printf("\nEnter Arrival Time of p[%d] process",i+1);
-		scanf("%d",&at[i]);
-		printf("Enter Burst Time of p[%d] process",i+1);
-		scanf("%d",&bt[i]);
-		rt[i]=bt[i];
-	}
-	printf("\nProcess\t|Turnaround Time|Waiting Time\n");
-	for(t=0,c=0;r!=0;)
-	{
-		if(rt[c]<=tq&&rt[c]>0)
-		{
-			t=t+rt[c];
-			rt[c]=0;
-			flag=1;
-		}
-		else if(rt[c]>0)
-		{
-		rt[c]-=tq;
-		t=t+tq;
-		}
-		if(rt[c]==0&&flag==1)
-		{
-		r--;
-		printf("P[%d]\t|\t%d\t|\t%d\n",c+1,t-at[c],t-at[c]-bt[c]);
-		wt+=t-at[c]-bt[c];
-		tat+=t-at[c];
-		flag=0;
-		}
-		if(c==n-1)
-		c=0;
-		else if(at[c+1]<=t)
-		c++;
-		else
-		c=0;
-	}
-printf("\nAverage Waiting Time= %f\n",wt*1.0/n);
-printf("Avg Turnaround Time = %f",tat*1.0/n);
+printf("Please enter number of processes: ");    //enter the num of processes
+scanf("%d",&n);
+for (int i=0;i<n;i++){
+	// ask for arrival and burst time
+printf("Arrival Time for Process: %d\n",i+1);
+scanf("%d",&arrivalTime[i]);
+printf("Burst Time for Process: %d\n",i+1);
+scanf("%d",&burstTime[i]);
+printf("-------------------------------------------------\n");
 }
+for (int i = 0 ; i < n ; i++){ // Make a copy of burst times
+        remainingBT[i] =  burstTime[i];
+ }
+calcWait();
+if(checkBT>0){
+timeQauntum=6;
+calcWait();
+}
+if(checkBT>0){
+    sjf();
+}
+checkBT=0;
+for(int i=0;i<n;i++){
+    checkBT += remainingBT[i];
+}
+//TAT calculation
+for (int i=0; i<n; i++){
+    TurnAroundTime[i] = burstTime[i] + waitingTime[i];
+    compltnTime[i] = TurnAroundTime[i] + arrivalTime[i];
+}
+printf("Current Time %d\n",time);
+printf("TotalRemainingBT %d\n",checkBT);
+printf("--------------------------------------------------------------------------------------------------------------\n");
+printf("ProcessNum ||  Arrival Time ||  Burst Time || CompletionTime || Waiting Time || TurnaroundTime  || RemainingBT\n");
 
+for (int i=0; i<n; i++){
+   // printf("-----------------------------------------------------------------\n");
+    printf("Process %d  || \t",i+1);
+    printf("%d\t    || \t",arrivalTime[i] );
+    printf("%d\t   || \t",burstTime[i] );
+    printf("%d\t     ||\t",compltnTime[i] );
+    printf("%d\t     ||\t",waitingTime[i] );
+    printf("%d\t        ||\t",TurnAroundTime[i] );
+    printf("%d\n",remainingBT[i] );
+  }
+//average time calculation
+    int total_Waiting_time=0;
+    int total_turnaround_time=0;
+    for (int i = 0; i < n; i++) {
+        total_Waiting_time +=  waitingTime[i];
+        total_turnaround_time += TurnAroundTime[i];
+    }
+	printf("------------------------------------------------------------------------------------------------------\n");
+    printf("Average waiting time  : %.2f", (float) total_Waiting_time / (float)n);
+    printf("\nAverage turnaround time  : %.2f", (float) total_turnaround_time / (float)n);
+    printf("\n----------------------------------------------------------------------------------------------------\n");
+}//end of main
+
+void calcWait(){
+    bool flag = false;
+condnCheck:
+    for(int i=0;i<n;i++){
+        if(remainingBT[i]>timeQauntum && arrivalTime[i]<=time && remainingBT[i]>0){
+            remainingBT[i] -= timeQauntum;
+            time += timeQauntum;
+            flag = true;
+            if(remainingBT[i] == 0){
+            waitingTime[i] = time - arrivalTime[i] - burstTime[i];
+            flag =true;
+         }
+        }
+        else 
+		if(remainingBT[i]<=timeQauntum && arrivalTime[i]<=time && remainingBT[i]>0)
+	{
+          time = time + remainingBT[i];
+            remainingBT[i] = 0;
+            flag = true;
+            if(remainingBT[i] == 0){
+            waitingTime[i] = time - arrivalTime[i] - burstTime[i];
+            flag =true;
+         }
+          }
+        if(flag == false){
+            time++;
+            goto condnCheck;
+        }
+}
+checkBT=0;
+for(int i=0;i<n;i++){
+    checkBT += remainingBT[i];
+}
+}
+int smallestBT = INT_MAX;
+void sjf()
+{
+while (1)
+ {
+        flag = false;
+        for (int i = 0; i < n; i++) {
+            if (remainingBT[i] > 0 && (remainingBT[i] < smallestBT)){
+                posMinBT = i;
+                smallestBT = remainingBT[i];
+                flag = true;
+            }
+   if (flag == false) {
+            continue; 
+        }}
+        time += remainingBT[posMinBT];
+        remainingBT[posMinBT]=0; //finish the process
+        TAT = time - arrivalTime[posMinBT];
+        waitingTime[posMinBT] = TAT - burstTime[posMinBT];
+        smallestBT = INT_MAX;
+if (flag==false)
+    break;
+}}
