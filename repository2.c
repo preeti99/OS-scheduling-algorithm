@@ -6,19 +6,18 @@ int main()
  double avg=0,tt=0,end;
   printf("enter the number of Students arriving in a mess:\n");
   scanf("%d",&n); 
- printf("enter process id of the student\n");
+ printf("Enter process id of the student\n");
  for(i=0;i<n;i++)
  scanf("%d",&p[i]);
- printf("enter arrival time of the student\n");
+ printf("Enter arrival time of the student\n");
  for(i=0;i<n;i++)
  scanf("%d",&a[i]);
- printf("enter food taking time\n");  
+ printf("Enter food taking time\n");  
  for(i=0;i<n;i++)
  scanf("%d",&b[i]); 
  for(i=0;i<n;i++)
  x[i]=b[i];
- 
-for(time=0;count!=n;time++)
+ for(time=0;count!=n;time++)
  {
    largest=9;
   for(i=0;i<n;i++)
